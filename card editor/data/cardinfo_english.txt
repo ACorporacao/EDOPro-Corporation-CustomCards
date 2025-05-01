@@ -127,6 +127,7 @@
 0x1000000	Pendulum  
 0x2000000	SPSummon  
 0x4000000	Link      
+
 ##setname
 -1	Custom
 0x49	Gravida
