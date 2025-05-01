@@ -1,4 +1,5 @@
 # database history
+C:\Projeto Corporacao\expansions\cards-custom.cdb
 C:\Projeto Corporacao\repositories\EDOPro-Corporation-CustomCards\cards-custom.cdb
 C:\Projeto Corporacao\repositories\EDOPro-Corporation-CustomCards\cards-fenisus.cdb
 C:\Projeto Corporacao\repositories\EDOPro-Corporation-CustomCards\cards-jaziel.cdb
