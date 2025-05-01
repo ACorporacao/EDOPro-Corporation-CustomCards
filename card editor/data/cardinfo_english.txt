@@ -129,6 +129,7 @@
 0x4000000	Link      
 
 ##setname
+-1	Custom
 0x49	Gravida
 0x01	FusAnimal
 0x02    Games
