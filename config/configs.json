@@ -11,9 +11,6 @@
 			"url": "https://github.com/FeniSus/EDOPro-Corporation-CustomCards",
 			"repo_name": "A Corporacao",
 			"repo_path": ".",
-			"data_path": "./expansions",
-			"script_path": "./expansions/script",
-			"pics_path": "./expansions/pics",
 			"lflist_path": ".",
 			"should_update": true,
 			"should_read": true
