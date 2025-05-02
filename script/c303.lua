@@ -19,6 +19,7 @@ function s.initial_effect(c)
 	e1:SetCost(s.spcost)
 	e1:SetTarget(s.sptg)
 	e1:SetOperation(s.spop)
+	e1:SetCondition(function(e,tp) return Duel.GetCurrentPhase()==PHASE_MAIN1 or Duel.GetCurrentPhase()==PHASE_MAIN2 end)
 	c:RegisterEffect(e1)
 	
 	-- Nome se torna "301" no campo/Cemitério
