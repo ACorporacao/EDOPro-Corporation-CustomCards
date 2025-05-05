@@ -20,6 +20,15 @@ function s.initial_effect(c)
 	e2:SetCondition(function(e) return e:GetHandler():IsSummonType(SUMMON_TYPE_XYZ) end)
 	e2:SetOperation(s.start_count)
 	c:RegisterEffect(e2)
+
+	-- EFEITO 03: Se não tiver Eren como material, destrua
+	local e3=Effect.CreateEffect(c)
+	e3:SetType(EFFECT_TYPE_FIELD+EFFECT_TYPE_CONTINUOUS)
+	e3:SetRange(LOCATION_MZONE)
+	e3:SetCode(EVENT_ADJUST)
+	e3:SetCondition(s.descon)
+	e3:SetOperation(s.desop)
+	c:RegisterEffect(e3)
 end
 
 -- ===== INVOCACAO XYZ CUSTOMIZADA =====
@@ -79,15 +88,6 @@ function s.start_count(e,tp,eg,ep,ev,re,r,rp)
 	e2:SetOperation(s.reset)
 	e2:SetReset(RESETS_STANDARD_PHASE_END+RESET_OPPO_TURN,3)
 	c:RegisterEffect(e2)
-
-	-- EFEITO 03: Se não tiver Eren como material, destrua
-	local e3=Effect.CreateEffect(c)
-	e3:SetType(EFFECT_TYPE_FIELD+EFFECT_TYPE_CONTINUOUS)
-	e3:SetRange(LOCATION_MZONE)
-	e3:SetCode(EVENT_ADJUST)
-	e3:SetCondition(s.descon)
-	e3:SetOperation(s.desop)
-	c:RegisterEffect(e3)
 end
 
 function s.count_con(e,tp,eg,ep,ev,re,r,rp)
