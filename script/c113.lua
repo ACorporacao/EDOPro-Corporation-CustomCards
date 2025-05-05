@@ -22,20 +22,15 @@ function s.initial_effect(c)
 	c:RegisterEffect(e2)
 
 	-- EFEITO 03: Se não tiver Eren como material, destrua imediatamente
+		-- EFEITO 03: Se não tiver Eren como material, destrua
 	local e3=Effect.CreateEffect(c)
-	e3:SetType(EFFECT_TYPE_FIELD+EFFECT_TYPE_CONTINUOUS)
-	e3:SetRange(LOCATION_MZONE)
-	e3:SetCode(EVENT_LEAVE_FIELD)
-	e3:SetOperation(s.check_material)
+	e3:SetType(EFFECT_TYPE_SINGLE+EFFECT_TYPE_CONTINUOUS)
+	e3:SetCode(EVENT_ADJUST)
+	e3:SetProperty(EFFECT_FLAG_CANNOT_DISABLE)
+	e3:SetCondition(s.no_eren_cond)
+	e3:SetOperation(s.destroy_self)
 	c:RegisterEffect(e3)
 
-	-- Check após qualquer ajuste de estado
-	local e4=Effect.CreateEffect(c)
-	e4:SetType(EFFECT_TYPE_FIELD+EFFECT_TYPE_CONTINUOUS)
-	e4:SetRange(LOCATION_MZONE)
-	e4:SetCode(EVENT_ADJUST)
-	e4:SetOperation(s.check_material)
-	c:RegisterEffect(e4)
 end
 
 -- ===== INVOCACAO XYZ CUSTOMIZADA =====
@@ -129,3 +124,16 @@ function s.check_material(e,tp,eg,ep,ev,re,r,rp)
 		Duel.Destroy(c,REASON_EFFECT)
 	end
 end
+
+function s.no_eren_cond(e,tp,eg,ep,ev,re,r,rp)
+	local c=e:GetHandler()
+	if not c:IsFaceup() or not c:IsLocation(LOCATION_MZONE) then return false end
+	local og=c:GetOverlayGroup()
+	return not og:IsExists(Card.IsCode,1,nil,101)
+end
+
+function s.destroy_self(e,tp,eg,ep,ev,re,r,rp)
+	local c=e:GetHandler()
+	Duel.Destroy(c,REASON_EFFECT)
+end
+
