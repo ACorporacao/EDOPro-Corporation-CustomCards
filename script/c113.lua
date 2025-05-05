@@ -79,6 +79,15 @@ function s.start_count(e,tp,eg,ep,ev,re,r,rp)
 	e2:SetOperation(s.reset)
 	e2:SetReset(RESETS_STANDARD_PHASE_END+RESET_OPPO_TURN,3)
 	c:RegisterEffect(e2)
+
+	-- EFEITO 03: Se não tiver Eren como material, destrua
+	local e3=Effect.CreateEffect(c)
+	e3:SetType(EFFECT_TYPE_FIELD+EFFECT_TYPE_CONTINUOUS)
+	e3:SetRange(LOCATION_MZONE)
+	e3:SetCode(EVENT_ADJUST)
+	e3:SetCondition(s.descon)
+	e3:SetOperation(s.desop)
+	c:RegisterEffect(e3)
 end
 
 function s.count_con(e,tp,eg,ep,ev,re,r,rp)
@@ -102,4 +111,18 @@ end
 
 function s.reset(e,tp,eg,ep,ev,re,r,rp)
 	s.count_op(e:GetLabelObject(),tp,eg,ep,ev,re,r,rp)
+end
+
+--EFEITO 3
+function s.descon(e,tp,eg,ep,ev,re,r,rp)
+	local c=e:GetHandler()
+	local og=c:GetOverlayGroup()
+	return not og:IsExists(Card.IsCode,1,nil,101)
+end
+
+function s.desop(e,tp,eg,ep,ev,re,r,rp)
+	local c=e:GetHandler()
+	if c:IsRelateToEffect(e) and c:IsFaceup() then
+		Duel.Destroy(c,REASON_EFFECT)
+	end
 end
