@@ -21,14 +21,21 @@ function s.initial_effect(c)
 	e2:SetOperation(s.start_count)
 	c:RegisterEffect(e2)
 
-	-- EFEITO 03: Se não tiver Eren como material, destrua
+	-- EFEITO 03: Se não tiver Eren como material, destrua imediatamente
 	local e3=Effect.CreateEffect(c)
 	e3:SetType(EFFECT_TYPE_FIELD+EFFECT_TYPE_CONTINUOUS)
 	e3:SetRange(LOCATION_MZONE)
-	e3:SetCode(EVENT_ADJUST)
-	e3:SetCondition(s.descon)
-	e3:SetOperation(s.desop)
+	e3:SetCode(EVENT_LEAVE_FIELD)
+	e3:SetOperation(s.check_material)
 	c:RegisterEffect(e3)
+
+	-- Check após qualquer ajuste de estado
+	local e4=Effect.CreateEffect(c)
+	e4:SetType(EFFECT_TYPE_FIELD+EFFECT_TYPE_CONTINUOUS)
+	e4:SetRange(LOCATION_MZONE)
+	e4:SetCode(EVENT_ADJUST)
+	e4:SetOperation(s.check_material)
+	c:RegisterEffect(e4)
 end
 
 -- ===== INVOCACAO XYZ CUSTOMIZADA =====
@@ -114,15 +121,11 @@ function s.reset(e,tp,eg,ep,ev,re,r,rp)
 end
 
 --EFEITO 3
-function s.descon(e,tp,eg,ep,ev,re,r,rp)
+function s.check_material(e,tp,eg,ep,ev,re,r,rp)
 	local c=e:GetHandler()
+	if not c:IsRelateToEffect(e) or not c:IsFaceup() then return end
 	local og=c:GetOverlayGroup()
-	return not og:IsExists(Card.IsCode,1,nil,101)
-end
-
-function s.desop(e,tp,eg,ep,ev,re,r,rp)
-	local c=e:GetHandler()
-	if c:IsRelateToEffect(e) and c:IsFaceup() then
+	if not og:IsExists(Card.IsCode,1,nil,101) then
 		Duel.Destroy(c,REASON_EFFECT)
 	end
 end
