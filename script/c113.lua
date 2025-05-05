@@ -93,3 +93,13 @@ function s.count_op(e,tp,eg,ep,ev,re,r,rp)
 		-- Invoca Especialmente "Eren Yeager" do overlay
 		local og=c:GetOverlayGroup()
 		local eren=og:Filter(Card.IsCode,nil,101):GetFirst()
+		if eren and Duel.GetLocationCount(tp,LOCATION_MZONE)>0 then
+			Duel.Overlay(c,og:Filter(aux.NOT(Card.IsCode),nil,101)) -- remove os outros materiais
+			Duel.SpecialSummon(eren,0,tp,tp,false,false,POS_FACEUP)
+		end
+	end
+end
+
+function s.reset(e,tp,eg,ep,ev,re,r,rp)
+	s.count_op(e:GetLabelObject(),tp,eg,ep,ev,re,r,rp)
+end
