@@ -21,15 +21,15 @@ function s.initial_effect(c)
 	e2:SetOperation(s.start_count)
 	c:RegisterEffect(e2)
 
-	-- EFEITO 03: Se não tiver Eren como material, destrua imediatamente
-		-- EFEITO 03: Se não tiver Eren como material, destrua
+	-- EFEITO 03: Se não tiver Eren como material, destrua no fim do turno
 	local e3=Effect.CreateEffect(c)
-	e3:SetType(EFFECT_TYPE_SINGLE+EFFECT_TYPE_CONTINUOUS)
-	e3:SetCode(EVENT_ADJUST)
-	e3:SetProperty(EFFECT_FLAG_CANNOT_DISABLE)
+	e3:SetType(EFFECT_TYPE_FIELD+EFFECT_TYPE_CONTINUOUS)
+	e3:SetCode(EVENT_PHASE+PHASE_END)
+	e3:SetRange(LOCATION_MZONE)
 	e3:SetCondition(s.no_eren_cond)
 	e3:SetOperation(s.destroy_self)
 	c:RegisterEffect(e3)
+
 
 end
 
