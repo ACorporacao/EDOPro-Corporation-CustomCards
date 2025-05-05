@@ -102,12 +102,17 @@ function s.count_op(e,tp,eg,ep,ev,re,r,rp)
 			if eren and Duel.GetLocationCount(c:GetControler(),LOCATION_MZONE)>0 then
 				Duel.Overlay(c,og:Filter(aux.NOT(Card.IsCode),nil,104)) -- remove os outros materiais
 				Duel.SpecialSummon(eren,0,tp,tp,false,false,POS_FACEUP)
+
+				-- Destrói o monstro que invocou o C104
+				Duel.BreakEffect()
+				Duel.Destroy(c,REASON_EFFECT)
 			else
 				Duel.Destroy(c,REASON_EFFECT)
 			end
 		end
 	end
 end
+
 
 
 
