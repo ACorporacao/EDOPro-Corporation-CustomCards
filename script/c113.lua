@@ -3,7 +3,7 @@ local s,id = GetID()
 function s.initial_effect(c)
 	-- Restrição de Invocação Xyz
 	c:EnableReviveLimit()
-	aux.AddXyzProcedure(c,s.matfilter,4,1) -- Nível 4, 1 material
+	Xyz.AddProcedure(c,s.matfilter,4,1) -- Nível 4, 1 material
 end
 
 -- Filtro para material Xyz (Eren Yeager que não foi Invocado Normalmente neste turno)
