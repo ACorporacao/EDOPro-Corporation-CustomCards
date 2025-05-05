@@ -13,7 +13,7 @@ function s.initial_effect(c)
 	e1:SetValue(SUMMON_TYPE_XYZ)
 	c:RegisterEffect(e1)
 
-	-- EFEITO 02: Na 3ª Fase Final do oponente, invoca automaticamente Eren dos materiais
+	-- EFEITO 02: Após 3 Fases Finais do oponente, Invoca Especialmente o Eren Yeager" usado como material
 	local e2=Effect.CreateEffect(c)
 	e2:SetType(EFFECT_TYPE_FIELD+EFFECT_TYPE_CONTINUOUS)
 	e2:SetCode(EVENT_PHASE+PHASE_END)
@@ -21,40 +21,40 @@ function s.initial_effect(c)
 	e2:SetCondition(s.spcon)
 	e2:SetOperation(s.spop)
 	c:RegisterEffect(e2)
-
-	-- EFEITO 03: Autodestruição se não houver Eren como material
-	local e3=Effect.CreateEffect(c)
-	e3:SetType(EFFECT_TYPE_FIELD+EFFECT_TYPE_CONTINUOUS)
-	e3:SetCode(EVENT_ADJUST)
-	e3:SetRange(LOCATION_MZONE)
-	e3:SetCondition(s.descon)
-	e3:SetOperation(s.desop)
-	c:RegisterEffect(e3)
 end
 
--- INVOCACAO XYZ
-
+-- Filtro para Eren Yeager (c101)
 function s.matfilter(c)
 	return c:IsFaceup() and c:IsCode(101) and s.checkErenCondition(c)
 end
 
+-- Condição personalizada
 function s.checkErenCondition(c)
 	local turn_id = Duel.GetTurnCount()
 	local summon_turn = c:GetTurnID()
 	local summon_type = c:GetSummonType()
-	if (summon_type & SUMMON_TYPE_SPECIAL) == SUMMON_TYPE_SPECIAL then return true end
+	
+	-- Se foi Invocado Especialmente, pode sempre
+	if (summon_type & SUMMON_TYPE_SPECIAL) == SUMMON_TYPE_SPECIAL then
+		return true
+	end
+
+	-- Se foi Invocado Normalmente, só se não for neste turno
 	if (summon_type & SUMMON_TYPE_NORMAL) == SUMMON_TYPE_NORMAL then
 		return summon_turn < turn_id
 	end
+
 	return false
 end
 
+-- Condição de Invocação Xyz
 function s.xyzcon(e,c)
 	if c==nil then return true end
 	local tp=c:GetControler()
 	return Duel.IsExistingMatchingCard(s.matfilter,tp,LOCATION_MZONE,0,1,nil)
 end
 
+-- Operação da Invocação Xyz
 function s.xyzop(e,tp,eg,ep,ev,re,r,rp,c)
 	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_XMATERIAL)
 	local g=Duel.SelectMatchingCard(tp,s.matfilter,tp,LOCATION_MZONE,0,1,1,nil)
@@ -62,43 +62,28 @@ function s.xyzop(e,tp,eg,ep,ev,re,r,rp,c)
 	Duel.Overlay(c,g)
 end
 
--- EFEITO 02: Invocar Eren automaticamente após 3 Fases Finais do oponente
+-- ===== EFEITO 02: Invocação automática do Eren após 3 Fases Finais do oponente =====
+
 function s.spcon(e,tp,eg,ep,ev,re,r,rp)
 	local c=e:GetHandler()
-	if Duel.GetTurnPlayer()==tp then return false end
-	if not c:IsSummonType(SUMMON_TYPE_XYZ) then return false end
-	if not c:GetFlagEffectLabel(id) then
-		c:RegisterFlagEffect(id,RESET_EVENT+RESETS_STANDARD+RESET_PHASE+PHASE_END,0,3)
-		c:SetFlagEffectLabel(id,1)
-		return false
+	-- Contamos apenas Fases Finais do oponente
+	if Duel.GetTurnPlayer()~=tp then
+		local ct=c:GetFlagEffectLabel(id) or 0
+		ct=ct+1
+		c:ResetFlagEffect(id)
+		c:RegisterFlagEffect(id,RESET_EVENT+RESETS_STANDARD+RESET_PHASE+PHASE_END,0,0)
+		c:SetFlagEffectLabel(id,ct)
+		return ct==3
 	end
-	local ct=c:GetFlagEffectLabel(id)
-	if ct<3 then
-		c:SetFlagEffectLabel(id,ct+1)
-		return false
-	end
-	return true
+	return false
 end
 
 function s.spop(e,tp,eg,ep,ev,re,r,rp)
 	local c=e:GetHandler()
 	local og=c:GetOverlayGroup()
-	local yg=og:Filter(Card.IsCode,nil,101)
-	if #yg>0 and Duel.GetLocationCount(tp,LOCATION_MZONE)>0 then
-		local tc=yg:GetFirst()
-		Duel.Overlay(c,og:Filter(aux.NOT(Card.IsCode),nil,101)) -- remove os não-Eren
-		Duel.SpecialSummon(tc,0,tp,tp,false,false,POS_FACEUP)
+	local eren=og:Filter(Card.IsCode,nil,101):GetFirst()
+	if eren and Duel.GetLocationCount(tp,LOCATION_MZONE)>0 then
+		Duel.Overlay(c,og:Filter(aux.NOT(Card.IsCode),nil,101)) -- Remove outros materiais se houver
+		Duel.SpecialSummon(eren,0,tp,tp,false,false,POS_FACEUP)
 	end
-end
-
--- EFEITO 03: Autodestruição se não houver Eren como material
-function s.descon(e,tp,eg,ep,ev,re,r,rp)
-	local c=e:GetHandler()
-	local og=c:GetOverlayGroup()
-	return og:FilterCount(Card.IsCode,nil,101)==0
-end
-
-function s.desop(e,tp,eg,ep,ev,re,r,rp)
-	local c=e:GetHandler()
-	Duel.Destroy(c,REASON_EFFECT)
 end
