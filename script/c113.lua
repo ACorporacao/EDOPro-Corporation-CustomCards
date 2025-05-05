@@ -101,15 +101,22 @@ function s.count_op(e,tp,eg,ep,ev,re,r,rp)
 	local ct=c:GetTurnCounter()+1
 	c:SetTurnCounter(ct)
 	if ct==3 then
+		-- Verifica se há espaço no campo antes de invocar o Eren
+		if Duel.GetLocationCount(tp,LOCATION_MZONE)<=0 then
+			Duel.Destroy(c,REASON_RULE)
+			return
+		end
+
 		-- Invoca Especialmente "Eren Yeager" do overlay
 		local og=c:GetOverlayGroup()
 		local eren=og:Filter(Card.IsCode,nil,101):GetFirst()
-		if eren and Duel.GetLocationCount(tp,LOCATION_MZONE)>0 then
+		if eren then
 			Duel.Overlay(c,og:Filter(aux.NOT(Card.IsCode),nil,101)) -- remove os outros materiais
 			Duel.SpecialSummon(eren,0,tp,tp,false,false,POS_FACEUP)
 		end
 	end
 end
+
 
 function s.reset(e,tp,eg,ep,ev,re,r,rp)
 	s.count_op(e:GetLabelObject(),tp,eg,ep,ev,re,r,rp)
