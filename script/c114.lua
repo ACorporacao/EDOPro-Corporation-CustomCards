@@ -21,16 +21,14 @@ function s.initial_effect(c)
 	e2:SetOperation(s.start_count)
 	c:RegisterEffect(e2)
 
-	-- Efeito 03: destrói o card se não tiver Eren como material
+	-- EFEITO 03: Se não tiver Eren como material, destrua no fim do turno
 	local e3=Effect.CreateEffect(c)
 	e3:SetType(EFFECT_TYPE_FIELD+EFFECT_TYPE_CONTINUOUS)
-	e3:SetCode(EVENT_ADJUST)
+	e3:SetCode(EVENT_PHASE+PHASE_END)
 	e3:SetRange(LOCATION_MZONE)
-	e3:SetProperty(EFFECT_FLAG_CANNOT_DISABLE+EFFECT_FLAG_IGNORE_IMMUNE)
 	e3:SetCondition(s.no_eren_cond)
 	e3:SetOperation(s.destroy_self)
 	c:RegisterEffect(e3)
-
 
 
 end
@@ -130,14 +128,13 @@ end
 
 function s.no_eren_cond(e,tp,eg,ep,ev,re,r,rp)
 	local c=e:GetHandler()
-	if not c:IsFaceup() then return false end
+	if not c:IsFaceup() or not c:IsLocation(LOCATION_MZONE) then return false end
 	local og=c:GetOverlayGroup()
-	return not og:IsExists(Card.IsCode,1,nil,101)
+	return not og:IsExists(Card.IsCode,1,nil,104)
 end
 
 function s.destroy_self(e,tp,eg,ep,ev,re,r,rp)
 	local c=e:GetHandler()
 	Duel.Destroy(c,REASON_EFFECT)
 end
-
 
