@@ -34,8 +34,12 @@ function s.initial_effect(c)
 	e4:SetType(EFFECT_TYPE_SINGLE+EFFECT_TYPE_TRIGGER_F)
 	e4:SetCode(EVENT_SPSUMMON_SUCCESS)
 	e4:SetCondition(function(e) return e:GetHandler():IsSummonType(SUMMON_TYPE_SPECIAL) end)
-	e4:SetOperation(function(_,tp) Duel.Win(tp,WIN_REASON_EFFECT) end)
+	e4:SetOperation(function(e)
+		local tp = e:GetHandler():GetControler()
+		Duel.Win(tp, WIN_REASON_EFFECT)
+	end)
 	c:RegisterEffect(e4)
+
 end
 
 function s.spfilter(c,tp)
