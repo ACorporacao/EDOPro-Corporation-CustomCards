@@ -2,7 +2,7 @@
 local s,id=GetID()
 function s.initial_effect(c)
 	c:EnableReviveLimit()
-	
+
 	-- Invocação-Xyz personalizada
 	local e1=Effect.CreateEffect(c)
 	e1:SetType(EFFECT_TYPE_FIELD)
@@ -14,12 +14,13 @@ function s.initial_effect(c)
 	e1:SetValue(SUMMON_TYPE_XYZ)
 	c:RegisterEffect(e1)
 
-	-- EFEITO 01: Cadeia travada na invocação
+	-- Cadeia não pode ser respondida à invocação
 	local e2=Effect.CreateEffect(c)
 	e2:SetType(EFFECT_TYPE_SINGLE)
 	e2:SetCode(EFFECT_CANNOT_DISABLE_SPSUMMON)
 	c:RegisterEffect(e2)
 
+	-- Imune a efeitos/alvo se controlar Ficha do Colossal
 	local e3=Effect.CreateEffect(c)
 	e3:SetType(EFFECT_TYPE_SINGLE)
 	e3:SetCode(EFFECT_CANNOT_BE_EFFECT_TARGET)
@@ -38,13 +39,13 @@ function s.initial_effect(c)
 	e4:SetValue(s.efilter)
 	c:RegisterEffect(e4)
 
-	-- EFEITO 03: Não pode atacar
+	-- Não pode atacar
 	local e5=Effect.CreateEffect(c)
 	e5:SetType(EFFECT_TYPE_SINGLE)
 	e5:SetCode(EFFECT_CANNOT_ATTACK)
 	c:RegisterEffect(e5)
 
-	-- EFEITO 04: Invoca 2 fichas (sem resposta)
+	-- Invocar 2 Fichas
 	local e6=Effect.CreateEffect(c)
 	e6:SetDescription(aux.Stringid(id,0))
 	e6:SetCategory(CATEGORY_SPECIAL_SUMMON+CATEGORY_TOKEN)
@@ -57,10 +58,12 @@ function s.initial_effect(c)
 	c:RegisterEffect(e6)
 end
 
--- Invocação Xyz personalizada
+-- Filtro dos monstros Xyz AOT
 function s.xyzfilter(c)
-	return c:IsType(TYPE_XYZ) and c:IsSetCard(0x100)
+	return c:IsType(TYPE_XYZ) and c:IsSetCard(0x100) and c:IsCanBeXyzMaterial()
 end
+
+-- Condição de invocação personalizada
 function s.xyzcon(e,c)
 	if c==nil then return true end
 	local tp=c:GetControler()
@@ -68,17 +71,23 @@ function s.xyzcon(e,c)
 		and Duel.GetMatchingGroupCount(s.xyzfilter, tp, LOCATION_GRAVE, 0, nil) >= 4
 end
 
+-- Operação da invocação personalizada
 function s.xyzop(e,tp,eg,ep,ev,re,r,rp,c)
-	local g=Duel.SelectMatchingCard(tp, function(tc) return tc:IsCode(101) end, tp, LOCATION_GRAVE, 0, 1, 1, nil)
-	local g2=Duel.SelectMatchingCard(tp, s.xyzfilter, tp, LOCATION_GRAVE, 0, 4, 4, nil)
-	g:Merge(g2)
-	c:SetMaterial(g)
-	Duel.Overlay(c, g)
+	-- Seleciona Eren (código 101)
+	local eren=Duel.SelectMatchingCard(tp, function(tc) return tc:IsCode(101) end, tp, LOCATION_GRAVE, 0, 1, 1, nil)
+	if #eren==0 then return end
+
+	-- Seleciona 4 monstros Xyz AOT
+	local xyzs=Duel.SelectMatchingCard(tp, s.xyzfilter, tp, LOCATION_GRAVE, 0, 4, 4, nil)
+	if #xyzs<4 then return end
+
+	-- Define os materiais e faz overlay
+	eren:Merge(xyzs)
+	c:SetMaterial(eren)
+	Duel.Overlay(c, eren)
 end
 
-
-
--- Condição de imunidade
+-- Condição para imunidade
 function s.indcon(e)
 	return Duel.IsExistingMatchingCard(Card.IsCode,e:GetHandlerPlayer(),LOCATION_MZONE,0,1,nil,124)
 end
@@ -86,7 +95,7 @@ function s.efilter(e,te)
 	return te:GetOwnerPlayer()~=e:GetHandlerPlayer()
 end
 
--- Efeito de Ficha
+-- Invocação de Fichas
 function s.tkcon(e,tp,eg,ep,ev,re,r,rp)
 	return Duel.GetLocationCount(tp,LOCATION_MZONE)>=2
 end
