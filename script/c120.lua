@@ -72,49 +72,49 @@ function s.start_count(e,tp,eg,ep,ev,re,r,rp)
 	local e1=Effect.CreateEffect(c)
 	e1:SetType(EFFECT_TYPE_FIELD+EFFECT_TYPE_CONTINUOUS)
 	e1:SetProperty(EFFECT_FLAG_CANNOT_DISABLE)
-	e1:SetCode(EVENT_PHASE+PHASE_END)
+	e1:SetCode(EVENT_TURN_END)
 	e1:SetRange(LOCATION_MZONE)
 	e1:SetCondition(s.count_con)
 	e1:SetOperation(s.count_op)
-	e1:SetReset(RESETS_STANDARD_PHASE_END+RESET_OPPO_TURN,3)
+	e1:SetLabelObject(c)
 	c:RegisterEffect(e1)
-
-	-- Usado para garantir reset da contagem
-	local e2=Effect.CreateEffect(c)
-	e2:SetType(EFFECT_TYPE_SINGLE)
-	e2:SetProperty(EFFECT_FLAG_CANNOT_DISABLE+EFFECT_FLAG_UNCOPYABLE+EFFECT_FLAG_IGNORE_IMMUNE)
-	e2:SetCode(1082946)
-	e2:SetLabelObject(e1)
-	e2:SetOwnerPlayer(tp)
-	e2:SetOperation(s.reset)
-	e2:SetReset(RESETS_STANDARD_PHASE_END+RESET_OPPO_TURN,3)
-	c:RegisterEffect(e2)
 end
+
 
 function s.count_con(e,tp,eg,ep,ev,re,r,rp)
 	return Duel.GetTurnPlayer()~=tp
 end
 
 function s.count_op(e,tp,eg,ep,ev,re,r,rp)
-	local c=e:GetHandler()
-	local ct=c:GetTurnCounter()+1
-	c:SetTurnCounter(ct)
-	if ct==3 then
-		-- Verifica se há espaço no campo antes de invocar o Eren
-		if Duel.GetLocationCount(tp,LOCATION_MZONE)<=0 then
-			Duel.Destroy(c,REASON_RULE)
-			return
-		end
+	local c=e:GetLabelObject()
+	if not c or not c:IsFaceup() or not c:IsOnField() then return end
 
-		-- Invoca Especialmente "Eren Yeager" do overlay
-		local og=c:GetOverlayGroup()
-		local eren=og:Filter(Card.IsCode,nil,110):GetFirst()
-		if eren then
-			Duel.Overlay(c,og:Filter(aux.NOT(Card.IsCode),nil,110)) -- remove os outros materiais
-			Duel.SpecialSummon(eren,0,tp,tp,false,false,POS_FACEUP)
+	-- Evita contar mais de uma vez por turno
+	if c:GetFlagEffect(id)==0 then
+		local ct=c:GetTurnCounter()+1
+		c:SetTurnCounter(ct)
+		c:RegisterFlagEffect(id,RESET_EVENT+RESETS_STANDARD+RESET_PHASE+PHASE_END,0,1)
+
+		if ct==3 then
+			-- Invoca Especialmente "Eren Yeager" do overlay
+			local og=c:GetOverlayGroup()
+			local eren=og:Filter(Card.IsCode,nil,110):GetFirst()
+			if eren and Duel.GetLocationCount(c:GetControler(),LOCATION_MZONE)>0 then
+				Duel.Overlay(c,og:Filter(aux.NOT(Card.IsCode),nil,110)) -- remove os outros materiais
+				Duel.SpecialSummon(eren,0,tp,tp,false,false,POS_FACEUP)
+
+				-- Destrói o monstro que invocou o C104
+				Duel.BreakEffect()
+				Duel.Destroy(c,REASON_EFFECT)
+			else
+				Duel.Destroy(c,REASON_EFFECT)
+			end
 		end
 	end
 end
+
+
+
 
 
 function s.reset(e,tp,eg,ep,ev,re,r,rp)
