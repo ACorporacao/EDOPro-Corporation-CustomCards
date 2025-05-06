@@ -17,7 +17,7 @@ function s.initial_effect(c)
 end
 
 function s.thfilter(c)
-	return c:IsSetCard(0x100) and c:IsType(TYPE_SPELL+TYPE_TRAP) and c:IsAbleToHand() -- Magias/Armadilhas Attack On Titan
+	return c:IsSetCard(0x100) and c:IsType(TYPE_SPELL) and c:IsAbleToHand() -- Magias/Armadilhas Attack On Titan
 end
 
 function s.thtg(e,tp,eg,ep,ev,re,r,rp,chk)
