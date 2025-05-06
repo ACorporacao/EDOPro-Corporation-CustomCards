@@ -39,18 +39,21 @@ e4:SetOperation(s.desop)
 c:RegisterEffect(e4)
 end
 
-
 -- ===== INVOCACAO XYZ CUSTOMIZADA =====
 
 function s.matfilter(c)
-	return c:IsFaceup() and c:IsCode(103) and s.checkErenCondition(c)
+	return c:IsFaceup() and c:IsCode(109) and s.checkErenCondition(c)
 end
 
--- Verifica se o monstro NÃO foi invocado neste turno
 function s.checkErenCondition(c)
-	local current_turn = Duel.GetTurnCount()
+	local turn_id = Duel.GetTurnCount()
 	local summon_turn = c:GetTurnID()
-	return summon_turn < current_turn
+	local summon_type = c:GetSummonType()
+	if (summon_type & SUMMON_TYPE_SPECIAL) == SUMMON_TYPE_SPECIAL then return summon_turn < turn_id end
+	if (summon_type & SUMMON_TYPE_NORMAL) == SUMMON_TYPE_NORMAL then
+		return summon_turn < turn_id
+	end
+	return false
 end
 
 function s.xyzcon(e,c)
@@ -65,7 +68,6 @@ function s.xyzop(e,tp,eg,ep,ev,re,r,rp,c)
 	c:SetMaterial(g)
 	Duel.Overlay(c,g)
 end
-
 
 -- ===== CONTAGEM DE FASE FINAL DO OPONENTE =====
 
