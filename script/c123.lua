@@ -1,7 +1,8 @@
 -- Progenitora
 local s,id=GetID()
 
-local WIN_REASON_PROGENITORA = 0x1A
+-- Definindo constante de vitória por efeito (caso não esteja no core do EDOPro)
+local WIN_REASON_PROGENITORA = 0x1A  -- valor qualquer que represente vitória por efeito
 
 function s.initial_effect(c)
 	c:EnableReviveLimit()
@@ -23,7 +24,7 @@ function s.initial_effect(c)
 	e2:SetProperty(EFFECT_FLAG_CANNOT_DISABLE+EFFECT_FLAG_UNCOPYABLE)
 	c:RegisterEffect(e2)
 
-	-- Efeito 02: Imune a tudo
+	-- Efeito 02: Imune a todos os efeitos
 	local e3=Effect.CreateEffect(c)
 	e3:SetType(EFFECT_TYPE_SINGLE)
 	e3:SetCode(EFFECT_IMMUNE_EFFECT)
@@ -37,12 +38,8 @@ function s.initial_effect(c)
 	e4:SetType(EFFECT_TYPE_SINGLE+EFFECT_TYPE_TRIGGER_F)
 	e4:SetCode(EVENT_SPSUMMON_SUCCESS)
 	e4:SetCondition(function(e) return e:GetHandler():IsSummonType(SUMMON_TYPE_SPECIAL) end)
-	e4:SetOperation(function(e)
-		local tp = e:GetHandler():GetControler()
-		Duel.Win(tp, WIN_REASON_PROGENITORA)
-	end)
+	e4:SetOperation(function(_,tp) Duel.Win(tp, WIN_REASON_PROGENITORA) end)
 	c:RegisterEffect(e4)
-
 end
 
 function s.spfilter(c,tp)
@@ -59,5 +56,5 @@ function s.spop(e,tp,eg,ep,ev,re,r,rp,c)
 end
 
 function s.efilter(e,te)
-	return true -- imune a todos os efeitos
+	return true -- Imune a todos os efeitos
 end
