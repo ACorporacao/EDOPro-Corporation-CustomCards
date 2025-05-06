@@ -58,34 +58,29 @@ function s.initial_effect(c)
 	c:RegisterEffect(e6)
 end
 
--- Filtro dos monstros Xyz AOT
+-- Invocação Xyz personalizada
 function s.xyzfilter(c)
-	return c:IsType(TYPE_XYZ) and c:IsSetCard(0x100) and c:IsCanBeXyzMaterial()
+	return c:IsType(TYPE_XYZ) and c:IsSetCard(0x100)
 end
 
--- Condição de invocação personalizada
 function s.xyzcon(e,c)
 	if c==nil then return true end
 	local tp=c:GetControler()
-	return Duel.IsExistingMatchingCard(function(tc) return tc:IsCode(101) end, tp, LOCATION_GRAVE, 0, 1, nil)
-		and Duel.GetMatchingGroupCount(s.xyzfilter, tp, LOCATION_GRAVE, 0, nil) >= 4
+	return Duel.IsExistingMatchingCard(Card.IsCode,tp,LOCATION_GRAVE,0,1,nil,101)
+		and Duel.GetMatchingGroupCount(s.xyzfilter,tp,LOCATION_GRAVE,0,nil)>=4
+		and Duel.GetLocationCountFromEx(tp,tp,nil,c)>0
 end
 
--- Operação da invocação personalizada
 function s.xyzop(e,tp,eg,ep,ev,re,r,rp,c)
-	-- Seleciona Eren (código 101)
-	local eren=Duel.SelectMatchingCard(tp, function(tc) return tc:IsCode(101) end, tp, LOCATION_GRAVE, 0, 1, 1, nil)
-	if #eren==0 then return end
-
-	-- Seleciona 4 monstros Xyz AOT
-	local xyzs=Duel.SelectMatchingCard(tp, s.xyzfilter, tp, LOCATION_GRAVE, 0, 4, 4, nil)
-	if #xyzs<4 then return end
-
-	-- Define os materiais e faz overlay
-	eren:Merge(xyzs)
-	c:SetMaterial(eren)
-	Duel.Overlay(c, eren)
+	local g1=Duel.SelectMatchingCard(tp,Card.IsCode,tp,LOCATION_GRAVE,0,1,1,nil,101)
+	if #g1==0 then return end
+	local g2=Duel.SelectMatchingCard(tp,s.xyzfilter,tp,LOCATION_GRAVE,0,4,4,nil)
+	if #g2<4 then return end
+	g1:Merge(g2)
+	c:SetMaterial(g1)
+	Duel.Overlay(c,g1)
 end
+
 
 -- Condição para imunidade
 function s.indcon(e)
