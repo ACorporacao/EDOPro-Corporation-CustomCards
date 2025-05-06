@@ -36,7 +36,7 @@ function s.initial_effect(c)
 	e4:SetCondition(function(e) return e:GetHandler():IsSummonType(SUMMON_TYPE_SPECIAL) end)
 	e4:SetOperation(function(e)
 		local tp = e:GetHandler():GetControler()
-		Duel.Win(tp, WIN_REASON_EFFECT)
+		Duel.Win(tp, 0)
 	end)
 	c:RegisterEffect(e4)
 
