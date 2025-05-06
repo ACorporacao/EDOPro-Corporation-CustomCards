@@ -1,5 +1,8 @@
 -- Progenitora
 local s,id=GetID()
+
+local WIN_REASON_PROGENITORA = 0x1A
+
 function s.initial_effect(c)
 	c:EnableReviveLimit()
 
@@ -36,7 +39,7 @@ function s.initial_effect(c)
 	e4:SetCondition(function(e) return e:GetHandler():IsSummonType(SUMMON_TYPE_SPECIAL) end)
 	e4:SetOperation(function(e)
 		local tp = e:GetHandler():GetControler()
-		Duel.Win(tp, 0)
+		Duel.Win(tp, WIN_REASON_PROGENITORA)
 	end)
 	c:RegisterEffect(e4)
 
