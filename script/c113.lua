@@ -30,7 +30,10 @@ function s.initial_effect(c)
 	e3:SetOperation(s.destroy_self)
 	c:RegisterEffect(e3)
 
-
+	local e4=Effect.CreateEffect(c)
+	e4:SetType(EFFECT_TYPE_SINGLE)
+	e4:SetCode(EFFECT_PIERCE)
+	c:RegisterEffect(e4)
 end
 
 -- ===== INVOCACAO XYZ CUSTOMIZADA =====

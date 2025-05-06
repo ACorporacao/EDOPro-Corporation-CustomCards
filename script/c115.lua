@@ -30,7 +30,23 @@ function s.initial_effect(c)
 	e3:SetOperation(s.destroy_self)
 	c:RegisterEffect(e3)
 
+	-- EFEITO 04: Não pode atacar
+	local e4=Effect.CreateEffect(c)
+	e4:SetType(EFFECT_TYPE_SINGLE)
+	e4:SetCode(EFFECT_CANNOT_ATTACK)
+	c:RegisterEffect(e4)
 
+	-- EFEITO 05: Reduz ATK/DEF e destrói 1 monstro
+	local e5=Effect.CreateEffect(c)
+	e5:SetDescription(aux.Stringid(id, 1))
+	e5:SetCategory(CATEGORY_DESTROY)
+	e5:SetType(EFFECT_TYPE_IGNITION)
+	e5:SetRange(LOCATION_MZONE)
+	e5:SetCountLimit(1)
+	e5:SetCondition(s.descon)
+	e5:SetTarget(s.destg)
+	e5:SetOperation(s.desop)
+	c:RegisterEffect(e5)
 end
 
 -- ===== INVOCACAO XYZ CUSTOMIZADA =====
@@ -143,3 +159,41 @@ function s.destroy_self(e,tp,eg,ep,ev,re,r,rp)
 	Duel.Destroy(c,REASON_EFFECT)
 end
 
+
+
+--NEWS
+function s.descon(e,tp,eg,ep,ev,re,r,rp)
+	return e:GetHandler():GetAttack() >= 1000 and e:GetHandler():GetDefense() >= 1000
+end
+
+function s.destg(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
+	if chkc then return chkc:IsLocation(LOCATION_MZONE) and chkc:IsDestructable() end
+	if chk==0 then return Duel.IsExistingTarget(Card.IsDestructable,tp,LOCATION_MZONE,LOCATION_MZONE,1,nil) end
+	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_DESTROY)
+	local g=Duel.SelectTarget(tp,Card.IsDestructable,tp,LOCATION_MZONE,LOCATION_MZONE,1,1,nil)
+	Duel.SetOperationInfo(0,CATEGORY_DESTROY,g,1,0,0)
+end
+
+function s.desop(e,tp,eg,ep,ev,re,r,rp)
+	local c=e:GetHandler()
+	if not c:IsRelateToEffect(e) or c:IsFacedown() or c:GetAttack() < 1000 or c:GetDefense() < 1000 then return end
+
+	local atkdown=Effect.CreateEffect(c)
+	atkdown:SetType(EFFECT_TYPE_SINGLE)
+	atkdown:SetCode(EFFECT_UPDATE_ATTACK)
+	atkdown:SetValue(-1000)
+	atkdown:SetReset(RESET_EVENT+RESETS_STANDARD_DISABLE)
+	c:RegisterEffect(atkdown)
+
+	local defdown=Effect.CreateEffect(c)
+	defdown:SetType(EFFECT_TYPE_SINGLE)
+	defdown:SetCode(EFFECT_UPDATE_DEFENSE)
+	defdown:SetValue(-1000)
+	defdown:SetReset(RESET_EVENT+RESETS_STANDARD_DISABLE)
+	c:RegisterEffect(defdown)
+
+	local tc=Duel.GetFirstTarget()
+	if tc and tc:IsRelateToEffect(e) then
+		Duel.Destroy(tc,REASON_EFFECT)
+	end
+end
