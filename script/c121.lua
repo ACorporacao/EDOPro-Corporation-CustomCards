@@ -58,8 +58,7 @@ function s.initial_effect(c)
 	c:RegisterEffect(e6)
 end
 
--- Invocação Xyz personalizada
--- Invocação Xyz personalizada com debug
+-- Invocação Xyz personalizada limpa
 function s.xyzfilter(c)
 	return c:IsType(TYPE_XYZ) and c:IsSetCard(0x100)
 end
@@ -67,38 +66,19 @@ end
 function s.xyzcon(e,c)
 	if c==nil then return true end
 	local tp=c:GetControler()
-
-	local hasEren = Duel.IsExistingMatchingCard(Card.IsCode,tp,LOCATION_GRAVE,0,1,nil,101)
-	local xyzCount = Duel.GetMatchingGroupCount(s.xyzfilter,tp,LOCATION_GRAVE,0,nil)
-	local space = Duel.GetLocationCountFromEx(tp,tp,nil,c)
-
-	-- DEBUG: enviar mensagens ao log do EDOPro
-	Debug.Message("[Fundador] Verificando invocação:")
-	Debug.Message(" - Eren no cemitério? " .. tostring(hasEren))
-	Debug.Message(" - Quantidade de Xyz 0x100 no cemitério: " .. tostring(xyzCount))
-	Debug.Message(" - Espaço no Extra Deck disponível? " .. tostring(space > 0))
-
-	return hasEren and xyzCount >= 4 and space > 0
+	return Duel.IsExistingMatchingCard(Card.IsCode,tp,LOCATION_GRAVE,0,1,nil,101)
+		and Duel.GetMatchingGroupCount(s.xyzfilter,tp,LOCATION_GRAVE,0,nil)>=4
+		and Duel.GetLocationCountFromEx(tp,tp,nil,c)>0
 end
 
 function s.xyzop(e,tp,eg,ep,ev,re,r,rp,c)
 	local g1=Duel.SelectMatchingCard(tp,Card.IsCode,tp,LOCATION_GRAVE,0,1,1,nil,101)
-	if #g1==0 then
-		Debug.Message("[Fundador] ERRO: Nenhum Eren encontrado.")
-		return
-	end
-
 	local g2=Duel.SelectMatchingCard(tp,s.xyzfilter,tp,LOCATION_GRAVE,0,4,4,nil)
-	if #g2<4 then
-		Debug.Message("[Fundador] ERRO: Menos de 4 Xyz 0x100 encontrados.")
-		return
-	end
-
 	g1:Merge(g2)
 	c:SetMaterial(g1)
 	Duel.Overlay(c,g1)
-	Debug.Message("[Fundador] Invocação executada com sucesso.")
 end
+
 
 
 -- Condição para imunidade
