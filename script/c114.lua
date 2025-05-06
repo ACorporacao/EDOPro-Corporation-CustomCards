@@ -29,12 +29,11 @@ function s.initial_effect(c)
 	e3:SetCondition(s.no_eren_cond)
 	e3:SetOperation(s.destroy_self)
 	c:RegisterEffect(e3)
-	--ATacar 2 vezes
+	
 	local e4=Effect.CreateEffect(c)
-	e4:SetType(EFFECT_TYPE_SINGLE)
-	e4:SetCode(EFFECT_EXTRA_ATTACK_MONSTER)
-	e4:SetValue(1)
-	c:RegisterEffect(e4)
+		e4:SetType(EFFECT_TYPE_SINGLE)
+		e4:SetCode(EFFECT_PIERCE)
+		c:RegisterEffect(e4)
 end
 
 -- ===== INVOCACAO XYZ CUSTOMIZADA =====

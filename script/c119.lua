@@ -31,12 +31,12 @@ function s.initial_effect(c)
 	c:RegisterEffect(e3)
 
 	-- EFEITO 04: Se esta carta atacar um monstro em posição de defesa, destrua-o imediatamente
-	local e4=Effect.CreateEffect(c)
-	e4:SetType(EFFECT_TYPE_SINGLE+EFFECT_TYPE_CONTINUOUS)
-	e4:SetCode(EVENT_DAMAGE_STEP_END)
-	e4:SetCondition(s.descond)
-	e4:SetOperation(s.desop)
-	c:RegisterEffect(e4)
+local e4=Effect.CreateEffect(c)
+e4:SetType(EFFECT_TYPE_SINGLE+EFFECT_TYPE_TRIGGER_O)
+e4:SetCode(EVENT_BATTLE_CONFIRM)
+e4:SetCondition(s.descond)
+e4:SetOperation(s.desop)
+c:RegisterEffect(e4)
 end
 
 -- ===== INVOCACAO XYZ CUSTOMIZADA =====
@@ -149,15 +149,15 @@ function s.destroy_self(e,tp,eg,ep,ev,re,r,rp)
 	Duel.Destroy(c,REASON_EFFECT)
 end
 
+
 function s.descond(e,tp,eg,ep,ev,re,r,rp)
 	local c=e:GetHandler()
 	local bc=c:GetBattleTarget()
-	return bc and bc:IsDefensePos() and bc:IsRelateToBattle()
+	return bc and bc:IsDefensePos() and bc:IsControler(1-tp)
 end
 
 function s.desop(e,tp,eg,ep,ev,re,r,rp)
-	local c=e:GetHandler()
-	local bc=c:GetBattleTarget()
+	local bc=e:GetHandler():GetBattleTarget()
 	if bc and bc:IsDefensePos() and bc:IsRelateToBattle() then
 		Duel.Destroy(bc,REASON_EFFECT)
 	end
