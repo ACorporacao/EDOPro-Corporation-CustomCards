@@ -64,16 +64,18 @@ end
 function s.xyzcon(e,c)
 	if c==nil then return true end
 	local tp=c:GetControler()
-	return Duel.IsExistingMatchingCard(aux.FilterFaceupCard(Card.IsCode),tp,LOCATION_GRAVE,0,1,nil,101) and
-		   Duel.GetMatchingGroupCount(s.xyzfilter,tp,LOCATION_GRAVE,0,nil)>=4
+	return Duel.IsExistingMatchingCard(function(tc) return tc:IsCode(101) and tc:IsFaceup() end, tp, LOCATION_GRAVE, 0, 1, nil)
+		and Duel.GetMatchingGroupCount(s.xyzfilter, tp, LOCATION_GRAVE, 0, nil) >= 4
 end
+
 function s.xyzop(e,tp,eg,ep,ev,re,r,rp,c)
-	local g=Duel.SelectMatchingCard(tp,aux.FilterFaceupCard(Card.IsCode),tp,LOCATION_GRAVE,0,1,1,nil,101)
-	local g2=Duel.SelectMatchingCard(tp,s.xyzfilter,tp,LOCATION_GRAVE,0,4,4,nil)
+	local g=Duel.SelectMatchingCard(tp, function(tc) return tc:IsCode(101) and tc:IsFaceup() end, tp, LOCATION_GRAVE, 0, 1, 1, nil)
+	local g2=Duel.SelectMatchingCard(tp, s.xyzfilter, tp, LOCATION_GRAVE, 0, 4, 4, nil)
 	g:Merge(g2)
 	c:SetMaterial(g)
-	Duel.Overlay(c,g)
+	Duel.Overlay(c, g)
 end
+
 
 -- Condição de imunidade
 function s.indcon(e)
