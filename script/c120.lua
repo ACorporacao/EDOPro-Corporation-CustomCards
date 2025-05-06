@@ -105,7 +105,7 @@ function s.count_op(e,tp,eg,ep,ev,re,r,rp)
 		c:SetTurnCounter(ct)
 		c:RegisterFlagEffect(id,RESET_EVENT+RESETS_STANDARD+RESET_PHASE+PHASE_END,0,1)
 
-		if ct==3 then
+		if ct==5 then
 			-- Invoca Especialmente "Eren Yeager" do overlay
 			local og=c:GetOverlayGroup()
 			local eren=og:Filter(Card.IsCode,nil,110):GetFirst()
