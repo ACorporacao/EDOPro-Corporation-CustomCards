@@ -53,7 +53,7 @@ function s.checkErenCondition(c)
 	local turn_id = Duel.GetTurnCount()
 	local summon_turn = c:GetTurnID()
 	local summon_type = c:GetSummonType()
-	if (summon_type & SUMMON_TYPE_SPECIAL) == SUMMON_TYPE_SPECIAL then return true end
+	if (summon_type & SUMMON_TYPE_SPECIAL) == SUMMON_TYPE_SPECIAL then return summon_turn < turn_id end
 	if (summon_type & SUMMON_TYPE_NORMAL) == SUMMON_TYPE_NORMAL then
 		return summon_turn < turn_id
 	end
