@@ -12,7 +12,7 @@ function s.initial_effect(c)
 	e2:SetRange(LOCATION_FZONE)
 	e2:SetTargetRange(LOCATION_MZONE,LOCATION_MZONE)
 	e2:SetTarget(s.attg)
-	e2:SetValue(200)
+	e2:SetValue(300)
 	c:RegisterEffect(e2)
 
 	-- Uma vez por turno: Adicionar 1 monstro do arquétipo 0x100 do Deck à mão
