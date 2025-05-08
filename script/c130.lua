@@ -33,7 +33,7 @@ end
 
 -- Filtro: Monstros Xyz do arquétipo "Attack On Titan"
 function s.statfilter(e,c)
-	return c:IsType(TYPE_XYZ) and c:IsSetCard(0x100)
+	return c:IsFaceup() and c:IsType(TYPE_XYZ) and c:IsSetCard(0x100)
 end
 
 -- Imunidade apenas contra efeitos de Magias
