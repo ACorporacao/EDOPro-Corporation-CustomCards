@@ -31,10 +31,6 @@ function s.initial_effect(c)
 end
 
 
--- Filtro com aux.TargetBoolFunction
-function s.statfilter(c)
-	return c:IsFaceup() and c:IsLevel(4) and c:IsRace(RACE_WARRIOR) and c:IsSetCard(0x100)
-end
 
 -- Imune a Magias
 function s.immval(e,te)
