@@ -11,26 +11,24 @@ function s.initial_effect(c)
 	e2:SetCode(EFFECT_UPDATE_ATTACK)
 	e2:SetRange(LOCATION_FZONE)
 	e2:SetTargetRange(LOCATION_MZONE,LOCATION_MZONE)
-	e2:SetTarget(aux.TargetBoolFunction(Card.IsSetCard,0x100))
-	e2:SetValue(300)
+	e2:SetTarget(s.attg)
+	e2:SetValue(1000)
 	c:RegisterEffect(e2)
-	--Def
-	local e3=e2:Clone()
-	e3:SetCode(EFFECT_UPDATE_DEFENSE)
-	c:RegisterEffect(e3)
 
 	-- Imunidade a Magias
-	local e4=Effect.CreateEffect(c)
-	e4:SetType(EFFECT_TYPE_FIELD)
-	e4:SetCode(EFFECT_IMMUNE_EFFECT)
-	e4:SetRange(LOCATION_FZONE)
-	e4:SetTargetRange(LOCATION_MZONE,LOCATION_MZONE)
-	e4:SetTarget(aux.TargetBoolFunction(Card.IsSetCard,0x100))
-	e4:SetValue(s.immval)
-	c:RegisterEffect(e4)
+	local e3=Effect.CreateEffect(c)
+	e3:SetType(EFFECT_TYPE_FIELD)
+	e3:SetCode(EFFECT_IMMUNE_EFFECT)
+	e3:SetRange(LOCATION_FZONE)
+	e3:SetTargetRange(LOCATION_MZONE,LOCATION_MZONE)
+	e3:SetTarget(aux.TargetBoolFunction(Card.IsRace,0x100))
+	e3:SetValue(s.immval)
+	c:RegisterEffect(e3)
 end
 
-
+function s.attg(e,c)
+	return c:IsSetCard(SET_SPRINGANS) and c:IsType(TYPE_XYZ)
+end
 
 -- Imune a Magias
 function s.immval(e,te)
