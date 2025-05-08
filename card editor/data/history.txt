@@ -6,6 +6,8 @@ C:\Projeto Corporacao\repositories\EDOPro-Corporation-CustomCards\cards-custom.c
 C:\Projeto Corporacao\expansions\cards-custom.cdb
 C:\Projeto Corporacao\repositories\EDOPro-Corporation-CustomCards\cards-jaziel.cdb
 # script history
+C:\Projeto Corporacao\repositories\EDOPro-Corporation-CustomCards\script\c128.lua
+C:\Projeto Corporacao\repositories\EDOPro-Corporation-CustomCards\script\c119.lua
 C:\Projeto Corporacao\repositories\EDOPro-Corporation-CustomCards\script\c136.lua
 C:\Projeto Corporacao\repositories\EDOPro-Corporation-CustomCards\script\c135.lua
 C:\Projeto Corporacao\repositories\EDOPro-Corporation-CustomCards\script\c134.lua
@@ -18,7 +20,5 @@ C:\Projeto Corporacao\expansions\script\c133.lua
 C:\Projeto Corporacao\expansions\script\c132.lua
 C:\Projeto Corporacao\expansions\script\c131.lua
 C:\Projeto Corporacao\repositories\EDOPro-Corporation-CustomCards\script\c120.lua
-C:\Projeto Corporacao\repositories\EDOPro-Corporation-CustomCards\script\c119.lua
 C:\Projeto Corporacao\repositories\EDOPro-Corporation-CustomCards\script\c117.lua
 C:\Projeto Corporacao\repositories\EDOPro-Corporation-CustomCards\script\c116.lua
-C:\Projeto Corporacao\repositories\EDOPro-Corporation-CustomCards\script\c115.lua
