@@ -25,7 +25,7 @@ function s.initial_effect(c)
 	e4:SetCode(EFFECT_IMMUNE_EFFECT)
 	e4:SetRange(LOCATION_FZONE)
 	e4:SetTargetRange(LOCATION_MZONE,LOCATION_MZONE)
-	e4:SetTarget(aux.TargetBoolFunction(0x100))
+	e4:SetTarget(aux.TargetBoolFunction(Card.IsRace,0x100))
 	e4:SetValue(s.immval)
 	c:RegisterEffect(e4)
 end
