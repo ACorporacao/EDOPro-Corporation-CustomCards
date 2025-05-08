@@ -27,7 +27,7 @@ function s.initial_effect(c)
 end
 
 function s.attg(e,c)
-	return c:IsSetCard(0x100) and c:IsRace(TYPE_WARRIOR)
+	return c:IsSetCard(0x100)
 end
 
 -- Alvo para monstros normais do arquétipo 0x100
