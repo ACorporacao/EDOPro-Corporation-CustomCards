@@ -12,30 +12,43 @@ function s.initial_effect(c)
 	e2:SetRange(LOCATION_FZONE)
 	e2:SetTargetRange(LOCATION_MZONE,LOCATION_MZONE)
 	e2:SetTarget(s.attg)
-	e2:SetValue(500)
+	e2:SetValue(200)
 	c:RegisterEffect(e2)
 
-	-- Imunidade a Magias
+	-- Uma vez por turno: Adicionar 1 monstro do arquétipo 0x100 do Deck à mão
 	local e3=Effect.CreateEffect(c)
-	e3:SetType(EFFECT_TYPE_FIELD)
-	e3:SetCode(EFFECT_IMMUNE_EFFECT)
+	e3:SetDescription(aux.Stringid(id,0))
+	e3:SetCategory(CATEGORY_TOHAND+CATEGORY_SEARCH)
+	e3:SetType(EFFECT_TYPE_IGNITION)
 	e3:SetRange(LOCATION_FZONE)
-	e3:SetTargetRange(LOCATION_MZONE,LOCATION_MZONE)
-	e3:SetTarget(s.normtg)
-	e3:SetValue(s.immallval)
+	e3:SetCountLimit(1)
+	e3:SetTarget(s.thtg)
+	e3:SetOperation(s.thop)
 	c:RegisterEffect(e3)
 end
 
+-- Alvo para Guerreiro do arquétipo 0x100
 function s.attg(e,c)
-	return c:IsSetCard(0x100)
+	return c:IsSetCard(0x100) and c:IsRace(RACE_WARRIOR)
 end
 
--- Alvo para monstros normais do arquétipo 0x100
-function s.normtg(e,c)
-	return c:IsSetCard(0x100) and c:IsType(TYPE_NORMAL)
+-- Busca: Filtro
+function s.thfilter(c)
+	return c:IsSetCard(0x100) and c:IsMonster() and c:IsAbleToHand()
 end
 
--- Imune a todos os efeitos do oponente
-function s.immallval(e,te)
-	return te:GetOwner()~=e:GetHandler():GetOwner()
+-- Busca: Target
+function s.thtg(e,tp,eg,ep,ev,re,r,rp,chk)
+	if chk==0 then return Duel.IsExistingMatchingCard(s.thfilter,tp,LOCATION_DECK,0,1,nil) end
+	Duel.SetOperationInfo(0,CATEGORY_TOHAND,nil,1,tp,LOCATION_DECK)
+end
+
+-- Busca: Operação
+function s.thop(e,tp,eg,ep,ev,re,r,rp)
+	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_ATOHAND)
+	local g=Duel.SelectMatchingCard(tp,s.thfilter,tp,LOCATION_DECK,0,1,1,nil)
+	if #g>0 then
+		Duel.SendtoHand(g,nil,REASON_EFFECT)
+		Duel.ConfirmCards(1-tp,g)
+	end
 end
