@@ -27,7 +27,7 @@ function s.initial_effect(c)
 end
 
 function s.attg(e,c)
-	return c:IsSetCard(SET_SPRINGANS) and c:IsType(TYPE_XYZ)
+	return c:IsSetCard(0x100) and c:IsType(TYPE_XYZ)
 end
 
 -- Imune a Magias
