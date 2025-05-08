@@ -7,18 +7,20 @@ function s.initial_effect(c)
 	e0:SetCode(EVENT_FREE_CHAIN)
 	c:RegisterEffect(e0)
 
-	-- E1: Monstros Xyz "Attack On Titan" ganham 500 ATK/DEF
+	-- E1: Todos os Monstros Xyz Attack On Titan ganham 500 ATK/DEF
 	local e1=Effect.CreateEffect(c)
 	e1:SetType(EFFECT_TYPE_FIELD)
 	e1:SetCode(EFFECT_UPDATE_ATTACK)
 	e1:SetRange(LOCATION_FZONE)
 	e1:SetTargetRange(LOCATION_MZONE,0)
-	e1:SetTarget(s.statfilter)
+	e1:SetTarget(function(e,c) return c:IsSetCard(0x100) and c:IsType(TYPE_XYZ) end)
 	e1:SetValue(500)
 	c:RegisterEffect(e1)
+
 	local e2=e1:Clone()
 	e2:SetCode(EFFECT_UPDATE_DEFENSE)
 	c:RegisterEffect(e2)
+
 
 	-- E2: Monstros Xyz "Attack On Titan" não são afetados por Magias
 	local e3=Effect.CreateEffect(c)
